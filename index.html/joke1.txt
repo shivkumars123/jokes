@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Joke</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Generate Joke</h1>
+        <label for="name">Please enter your name:</label>
+        <input type="text" id="name" placeholder="Your name">
+        <button onclick="generateJoke()">Generate Joke</button>
+        <p id="joke"></p>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        function generateJoke() {
+            const nameInput = document.getElementById('name');
+            const jokeElement = document.getElementById('joke');
+
+            const name = nameInput.value;
+            if (name === '') {
+                jokeElement.innerText = 'Please enter your name.';
+                return;
+            }
+
+            // Make API request to generate the joke
+            axios.get('/generate_joke', {
+                params: {
+                    name: name
+                }
+            })
+            .then(response => {
+                jokeElement.innerText = response.data.joke;
+            })
+            .catch(error => {
+                console.error(error);
+                jokeElement.innerText = 'Error occurred while generating the joke.';
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+from flask import Flask, request, jsonify
+import openai
+
+app = Flask(__name__)
+
+def generate_joke(name):
+    # Set up OpenAI API credentials
+    openai.api_key = 'YOUR_API_KEY'
+
+    # Generate a joke using OpenAI GPT-3
+    prompt = f"Knock, knock!\nWho's there?\n{name.capitalize()}\n{name.capitalize()} who?"
+    response = openai.Completion.create(
+        engine='text-davinci-003',
+        prompt=prompt,
+        max_tokens=50,
+        n=1,
+        stop=None,
+        temperature=0.6,
+        frequency_penalty=0.2,
+        presence_penalty=0.0
+    )
+
+    # Extract and return the generated joke
+    joke = response.choices[0].text.strip().split("\n")[-1]
+    return joke
+
+@app.route('/generate_joke')
+def api_generate_joke():
+    name = request.args.get('name', '')
+
+    joke = generate_joke(name)
+
+    return jsonify({'joke': joke})
+
+if __name__ == '__main__':
+    app.run()
